@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
+
 public class Constants {
 
     public class OperatorConstants {
@@ -7,15 +9,31 @@ public class Constants {
     }
 
     public class DrivetrainConstants {
-        public static final int leftFrontMotor_PORT = 14;
+        public static final int leftFrontMotor_PORT = 13;
         public static final int rightFrontMotor_PORT = 12;
-        public static final int leftRearMotor_PORT = 13;
+        public static final int leftRearMotor_PORT = 14;
         public static final int rightRearMotor_PORT = 11;
+
+        public static final double kP = 0.53;
+        public static final double kI = 0.00005;
+        public static final double kD = 0.01;
+
+        public static final double kGearRatio = 12.76;
+        public static final int kEncoderCPR = 535; // 42 CPRs del NEO * 12.76:1 (transmision de las mecanums), probablmente habra que multiplicar la transmision en otro lado y no aqui
+        public static final double kWheelRadiusMeters = Units.inchesToMeters(3);
+        
+        //public static final double kEncoderDistancePerPulse =
+            // Assumes the encoders are directly mounted on the wheel shafts
+            //(kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR;
+
+        public static final double kEncoderConversionFactor = (Units.inchesToMeters(1 / (kGearRatio * 2 * Math.PI * kWheelRadiusMeters) * 10));
+        
+
     }
 
     public class PIDConstants {
 
-        public static final double kP = 0.02;
+        public static final double kP = 4;
         public static final double kI = 0;
         public static final double kD = 0.005;
 
@@ -24,6 +42,7 @@ public class Constants {
     public class ArmConstants {
         public static final int arm_leftMotor_PORT = 21;
         public static final int arm_rightMotor_PORT = 22;
+        public static final double kEncoderError = 0.887;
     }
 
     public class IntakeLauncherConstants {
@@ -49,13 +68,13 @@ public class Constants {
             1.0 / (double) kEncoderCPR;
     
         public static final double kShooterFreeRPS = 96; //El maximo de RPS que puede dar
-        public static final double kShooterTargetRPS = 85; //Al que queremos llegar
+        public static final double kShooterTargetRPS = 90; //Al que queremos llegar
         public static final double kShooterToleranceRPS = 0; //Tolerancia de error 
     
         // Ojo, valores experimentales de kP, kI y kD, hay que experimentar.
-        public static final double kP = 0.08;
+        public static final double kP = 0.00005;
         public static final double kI = 0;
-        public static final double kD = 0.002;
+        public static final double kD = 0;
     
         // On a real robot the feedforward constants should be empirically determined; these are
         // reasonable guesses.

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Commands.DriveWithJoystick;
+import frc.robot.Subsystems.ArmSubsystem;
 import frc.robot.Subsystems.DrivetrainSubsystem;
 import frc.robot.Subsystems.IntakeSubsystem;
 import frc.robot.Subsystems.ShooterSubsystem;
@@ -21,6 +22,11 @@ public class RobotContainer {
   private Trigger LB = m_driverController.leftBumper();
   private Trigger RB = m_driverController.rightBumper();
 
+  private Trigger L3 = m_driverController.leftStick();
+
+  private Trigger povDown = m_driverController.povDown();
+  private Trigger povUp = m_driverController.povUp();
+
   private Trigger xButton = m_driverController.x();
 
   private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
@@ -28,18 +34,26 @@ public class RobotContainer {
   private final Command m_spinUpShooter = Commands.runOnce(m_shooter::enable, m_shooter);
   private final Command m_stopShooter = Commands.runOnce(m_shooter::disable, m_shooter);
 
-  private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+/*   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final DriveWithJoystick m_DriveWithJoystick = new DriveWithJoystick(m_drivetrainSubsystem,
       () -> -m_driverController.getRawAxis(0), 
       () -> m_driverController.getRawAxis(1),
       () -> m_driverController.getRawAxis(4), 
       () -> m_driverController.getRawAxis(3),
-      () -> m_driverController.getRawAxis(2));
+      () -> m_driverController.getRawAxis(2)); */
+
+  private final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
 
   
 
   public RobotContainer() {
-    m_drivetrainSubsystem.setDefaultCommand(m_DriveWithJoystick);
+    //m_drivetrainSubsystem.setDefaultCommand(m_DriveWithJoystick);
+
+    L3.whileTrue(m_ArmSubsystem.setSetpoint(0.16)); // Intake / Modo Correr 2
+
+    povDown.whileTrue(m_ArmSubsystem.setSetpoint(0.268)); // Shoot
+    povUp.whileTrue(m_ArmSubsystem.setSetpoint(0.322));
+
     configureBindings();
   }
 

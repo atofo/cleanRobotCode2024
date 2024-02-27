@@ -9,16 +9,14 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.Constants.PIDConstants;
 
 import java.util.function.DoubleSupplier;
-import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
@@ -35,7 +33,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private double processVar_rightRear;
   private double processVar_leftRear;
 
-  private ADIS16470_IMU Gyroscope = new ADIS16470_IMU();
 
   MecanumDrive m_drive = new MecanumDrive(leftFrontMotor::set, leftRearMotor::set, rightFrontMotor::set,
       rightRearMotor::set);
@@ -73,7 +70,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     leftRearEncoder.setVelocityConversionFactor(DrivetrainConstants.kEncoderConversionFactor / 60);
     rightRearEncoder.setVelocityConversionFactor(DrivetrainConstants.kEncoderConversionFactor / 60);
 
-    Gyroscope.calibrate();
+  
   }
 
   // Encoders
@@ -90,9 +87,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     leftRearEncoder.setPosition(0);
   }
 
-  public void resetGyro() {
-    Gyroscope.reset();
-  }
+
 
   public double getRightEncoderPosition() {
     return rightRearEncoder.getPosition();
@@ -209,7 +204,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     super.periodic();
     SmartDashboard.putNumber("Posicion atras izquierdo: ", getLeftEncoderPosition());
     SmartDashboard.putNumber("Posicion atras derecho: ", getRightEncoderPosition());
-    SmartDashboard.putNumber("Gyroscope", Gyroscope.getAngle(IMUAxis.kYaw));
   }
 
   public Command driveTest(){
@@ -312,37 +306,8 @@ DoubleSupplier rightTrigger, DoubleSupplier leftTrigger) {
 
   }
 
-  public Command autoTurnLeft(double angle) {
-    return runOnce(
-        // Reset gyroscope at the start of the command
-        () -> resetGyro())
-        // Turns Left at specified speed
-        .andThen(run(() -> {
-          if (Gyroscope.getAngle(IMUAxis.kYaw) < angle - 4) {
-            m_drive.driveCartesian(0, 0, -(0.25 + (Gyroscope.getAngle(IMUAxis.kYaw) * 0.005)));
-          } else if (Gyroscope.getAngle(IMUAxis.kYaw) > angle + 4) {
-            m_drive.driveCartesian(0, 0, 0.25 + (Gyroscope.getAngle(IMUAxis.kYaw) * 0.005));
-          } else {
-            m_drive.stopMotor();
-          }
-        }))
-        // End command when we've traveled the specified distance
-        .until(
-            () -> (Gyroscope.getAngle(IMUAxis.kYaw) < (angle + 4) && Gyroscope.getAngle(IMUAxis.kYaw) > (angle - 4)))
-        // Stop the drive when the command ends
-        .finallyDo(interrupted -> m_drive.stopMotor());
-  }
 
-  public Command autoTurnToAngle(double angle){
-    return runOnce(
-    () -> Gyroscope.reset())
-      .andThen(run(
-      () -> {
-        double error = angle - Gyroscope.getAngle(IMUAxis.kYaw);
-        m_drive.driveCartesian(error*DrivetrainConstants.kgyrokP, 0, 0);
-      }))
-      .until(
-        () -> (Math.abs(angle - Gyroscope.getAngle(IMUAxis.kYaw)) < 2));
-  }
+
+
 
 }
