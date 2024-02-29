@@ -101,75 +101,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return ((getLeftEncoderPosition() + getRightEncoderPosition()) / 2);
   }
 
-  public Command calculatePID_rightRear(double Setpoint) {
-    return run(() -> {
-      boolean stop = false;
-      pid_rightRear.setSetpoint(Setpoint);
-      while (stop == true) {
-        processVar_rightRear = pid_rightRear.calculate(rightRearEncoder.getPosition());
-        rightRearMotor.set(processVar_rightRear * 0.7);
-        rightFrontMotor.set(processVar_rightRear * 0.7);
-        if ((rightRearEncoder.getPosition() > Setpoint - 2) && (rightRearEncoder.getPosition() < Setpoint + 2)) {
-          stop = true;
-        }
-      }
-      resetEncoder_rightRear();
-    });
-
-  }
-
    
 
-  public Command calculatePID_leftRear(double Setpoint) {
-    return run(() -> {
-      boolean stop = false;
-      pid_leftRear.setSetpoint(Setpoint);
-      while (stop) {
-        processVar_leftRear = pid_leftRear.calculate(leftRearEncoder.getPosition());
-        leftRearMotor.set(processVar_leftRear * 0.7);
-        leftFrontMotor.set(processVar_leftRear * 0.7);
-        if ((leftRearEncoder.getPosition() > Setpoint - 2) && (leftRearEncoder.getPosition() < Setpoint + 2)) {
-          stop = true;
-        }
-      }
-      resetEncoder_leftRear();
-    });
 
-  }
-
-  /*
-   * public Command calculatePID_drive(double Setpoint_rightRear, double
-   * Setpoint_leftRear) {
-   * return run(() -> {
-   * resetEncoders();
-   * boolean stop = false;
-   * pid_rightRear.setSetpoint(Setpoint_rightRear);
-   * pid_leftRear.setSetpoint(Setpoint_leftRear);
-   * while (stop) {
-   * processVar_rightRear =
-   * pid_rightRear.calculate(rightRearEncoder.getPosition());
-   * processVar_leftRear = pid_leftRear.calculate(leftRearEncoder.getPosition());
-   * 
-   * rightRearMotor.set(processVar_rightRear * 0.7);
-   * rightFrontMotor.set(processVar_rightRear * 0.7);
-   * leftRearMotor.set(processVar_leftRear * 0.7);
-   * leftFrontMotor.set(processVar_leftRear * 0.7);
-   * 
-   * if ((rightRearEncoder.getPosition() > Setpoint_rightRear - 2)
-   * && (rightRearEncoder.getPosition() < Setpoint_rightRear + 2)
-   * && (leftRearEncoder.getPosition() > Setpoint_leftRear - 2)
-   * && (leftRearEncoder.getPosition() < Setpoint_leftRear + 2)) {
-   * stop = true;
-   * }
-   * }
-   * resetEncoders();
-   * stopCommand = true;
-   * }).until(() -> ((rightRearEncoder.getPosition() > Setpoint_rightRear - 2)
-   * && (rightRearEncoder.getPosition() < Setpoint_rightRear + 2)
-   * && (leftRearEncoder.getPosition() > Setpoint_leftRear - 2)
-   * && (leftRearEncoder.getPosition() < Setpoint_leftRear + 2)));
-   * }
-   */
 
   public Command calculatePID_drive(double Setpoint_rightRear, double Setpoint_leftRear, double speed) {
     return runOnce(() -> {
@@ -292,7 +226,7 @@ DoubleSupplier rightTrigger, DoubleSupplier leftTrigger) {
    * 
    */
 
-  public Command driveDistanceCommand(double distanceMeters, double speed) {
+/*   public Command driveDistanceCommand(double distanceMeters, double speed) {
     return runOnce(
         // Reset encoders at the start of the command
         () -> resetEncoders())
@@ -305,7 +239,7 @@ DoubleSupplier rightTrigger, DoubleSupplier leftTrigger) {
         .finallyDo(interrupted -> m_drive.stopMotor());
 
   }
-
+ */
 
 
 
